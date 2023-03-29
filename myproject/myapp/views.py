@@ -13,6 +13,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import PostForm
 from .models import Post
 
+from django.contrib import messages
+
 @login_required
 def post_create(request):
     if request.method == 'POST':
@@ -21,6 +23,7 @@ def post_create(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            messages.success(request, 'Post created successfully.')
             return redirect('post_detail', pk=post.pk)
     else:
         form = PostForm()
@@ -32,12 +35,15 @@ def post_list(request):
     posts = Post.objects.filter(date_posted__lte=timezone.now()).order_by('-date_posted')
     return render(request, 'myapp/post_list.html', {'posts': posts})
 
+
 @login_required
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     comments = post.comments.filter(active=True)
+
     if request.method == 'POST':
         form = CommentForm(request.POST)
+
         if form.is_valid():
             comment = form.save(commit=False)
             comment.post = post
@@ -46,7 +52,14 @@ def post_detail(request, pk):
             return redirect('post_detail', pk=post.pk)
     else:
         form = CommentForm()
-    return render(request, 'myapp/post_detail.html', {'post': post, 'comments': comments, 'form': form})
+
+    context = {
+        'post': post,
+        'comments': comments,
+        'form': form
+    }
+    return render(request, 'myapp/post_detail.html', context)
+
 
 @login_required
 def post_new(request):
@@ -81,8 +94,10 @@ def post_delete(request, pk):
     post.delete()
     return redirect('post_list')
 
+
 def home(request):
-    return render(request, 'myapp/home.html')
+    posts = Post.objects.all()
+    return render(request, 'myapp/home.html', {'posts': posts})
 
 class PostUpdateView(UpdateView):
     model = Post
