@@ -1,37 +1,42 @@
 {% extends 'myapp/base.html' %}
 
 {% block content %}
-  <div class="post">
-    <h2>{{ post.title }}</h2>
-    <p class="date">{{ post.date_posted|date }}</p>
-    <p>{{ post.content }}</p>
+  <div class="card my-4">
+    <div class="card-body">
+      <h2 class="card-title">{{ post.title }}</h2>
+      <p class="card-text">{{ post.content }}</p>
+      <p class="card-text"><small class="text-muted">{{ post.date_posted|date }}</small></p>
+      {% if request.user == post.author %}
+      <div class="btn-group">
+        <a href="{% url 'post_edit' pk=post.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+        <form action="{% url 'post_delete' pk=post.pk %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
   </div>
-  
-  {% if request.user == post.author %}
-    <a href="{% url 'post_edit' pk=post.pk %}">Edit</a>
-    <form action="{% url 'post_delete' pk=post.pk %}" method="post">
-      {% csrf_token %}
-      <input type="submit" value="Delete">
-    </form>
-  {% endif %}
-  
-  <h3>Comments</h3>
-<!-- comments section -->
-{% for comment in comments %}
-  <div class="comment">
-    <p class="info">{{ comment.author }} | {{ comment.date_posted }}</p>
-    <p>{{ comment.content }}</p>
+
+  <h3 class="my-4">Comments</h3>
+  {% for comment in comments %}
+  <div class="card mb-4">
+    <div class="card-body">
+      <p class="card-text">{{ comment.content }}</p>
+      <p class="card-text"><small class="text-muted">{{ comment.author }} | {{ comment.date_posted }}</small></p>
+    </div>
   </div>
-{% empty %}
+  {% empty %}
   <p>No comments yet.</p>
+  {% endfor %}
 
-<form method="post" action="{% url 'post_detail' pk=post.pk %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Add comment</button>
-  
-</form>
-
-{% endfor %}
-  <!-- comments section -->
+  <div class="card my-4">
+    <div class="card-body">
+      <form method="post" action="{% url 'post_detail' pk=post.pk %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Add comment</button>
+      </form>
+    </div>
+  </div>
 {% endblock %}
