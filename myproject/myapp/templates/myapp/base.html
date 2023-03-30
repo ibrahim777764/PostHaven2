@@ -9,11 +9,78 @@
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" type="text/css" href="{% static 'bootstrap-5.3.0-alpha2-dist/css/bootstrap.min.css' %}">
+
+  <style>
+    
+  body {
+    background: linear-gradient(45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+  }
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+
+    /* Style the navbar */
+    .navbar {
+      background-color: #333;
+    }
+
+    /* Change the link color when the mouse is over it */
+    .navbar-nav > li > a:hover {
+      color: #fff !important;
+    }
+
+    /* Style the search form */
+    .form-inline {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+
+    /* Style the search input field */
+    .form-control {
+      border-radius: 0;
+    }
+
+    /* Style the search button */
+    .btn-outline-success {
+      border-radius: 0;
+      color: #fff;
+      border-color: #fff;
+    }
+
+    /* Change the button color when the mouse is over it */
+    .btn-outline-success:hover {
+      background-color: #fff;
+      color: #333;
+    }
+
+    /* Style the profile and logout links */
+    .nav-link i {
+      margin-right: 5px;
+    }
+
+    /* Style the register button */
+    .btn-outline-primary {
+      border-radius: 0;
+    }
+  </style>
+
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="{% url 'home' %}">MyApp</a>
+      <a class="navbar-brand" href="{% url 'home' %}">PostHaven</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -23,19 +90,48 @@
             <a class="nav-link" href="{% url 'home' %}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'post_create' %}">New Post</a>
+            <a class="nav-link" href="{% url 'post_create' %}">Create Post</a>
           </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0" action="{% url 'search_posts' %}" method="GET">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        <ul class="navbar-nav ml-auto">
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'profile' user.username %}">
+              <i class="fas fa-user"></i> Profile
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">
+              <button class="btn btn-outline-primary" type="submit">Register</button>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">
+              <button class="btn btn-outline-success" type="submit">Login</button>
+            </a>
+          </li>
+          {% endif %}
         </ul>
       </div>
     </div>
-  </nav>
-
-  <div class="container mt-5">
-    {% block content %}
-    {% endblock %}
-  </div>
-
-  <!-- Bootstrap JS -->
-  <script type="text/javascript" src="{% static 'bootstrap-5.3.0-alpha2-dist/js/bootstrap.min.js' %}"></script>
-</body>
-</html>
+    
+      </nav>
+      <div class="container mt-4">
+        {% block content %}
+        {% endblock %}
+      </div>
+      <!-- Bootstrap JS -->
+      <script type="text/javascript" src="{% static 'bootstrap-5.3.0-alpha2-dist/js/bootstrap.min.js' %}"></script>
+    </body>
+    </html>
+         

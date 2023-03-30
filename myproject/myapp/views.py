@@ -6,7 +6,7 @@ from .forms import PostForm, CommentForm
 
 from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
-
+from django.db.models import Q
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -113,3 +113,15 @@ class PostUpdateView(UpdateView):
     success_url = reverse_lazy('post_list')
 
 
+def search_posts(request):
+    query = request.GET.get('q')
+    if query:
+        posts = Post.objects.filter(Q(title__icontains=query))
+    else:
+        posts = Post.objects.all()
+    context = {'posts': posts}
+    return render(request, 'myapp/post_list.html', context)
+
+@login_required
+def profile(request):
+    return render(request, 'myapp/profile.html')
