@@ -132,3 +132,6 @@ STATICFILES_DIRS = [
 STATIC_ROOT = '/home/ibrahim/Documents/updated/PostHaven2/myproject/staticfiles/'
 
 
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
