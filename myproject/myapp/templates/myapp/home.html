@@ -10,7 +10,7 @@
             <h5 class="card-title">{{ post.title }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">{{ post.date_posted|date }}</h6>
             <p class="card-text">{{ post.content|truncatechars:150 }}</p>
-            <a href="{% url 'post_detail' pk=post.pk %}" class="card-link">Read more</a>
+            <a href="{% url 'myapp:post_detail' pk=post.pk %}" class="card-link">Read more</a>
           </div>
         </div>
       </div>

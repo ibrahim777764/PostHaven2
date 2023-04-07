@@ -7,12 +7,13 @@ from .forms import PostForm, CommentForm
 from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
 from django.db.models import Q
+from django.contrib.auth.forms import UserCreationForm
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import PostForm
 from .models import Post
-
+from django.views.generic import RedirectView
 from django.contrib import messages
 
 @login_required
@@ -125,3 +126,24 @@ def search_posts(request):
 @login_required
 def profile(request):
     return render(request, 'myapp/profile.html')
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
+
+
+class HomeView(RedirectView):
+    url = reverse_lazy('myapp:post_list')
+
+    def get_redirect_url(self, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return reverse_lazy('myapp:profile', kwargs={'username': self.request.user.username})
+        else:
+            return super().get_redirect_url(*args, **kwargs)

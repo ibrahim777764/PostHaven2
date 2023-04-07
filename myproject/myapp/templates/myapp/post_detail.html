@@ -14,8 +14,8 @@
       
       {% if request.user == post.author %}
       <div class="btn-group">
-        <a href="{% url 'post_edit' pk=post.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-        <form action="{% url 'post_delete' pk=post.pk %}" method="post">
+        <a href="{% url 'myapp:post_edit' pk=post.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+        <form action="{% url 'myapp:post_delete' pk=post.pk %}" method="post">
           {% csrf_token %}
           <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
         </form>
@@ -38,7 +38,7 @@
 
   <div class="card my-4">
     <div class="card-body">
-      <form method="post" action="{% url 'post_detail' pk=post.pk %}">
+      <form method="post" action="{% url 'myapp:post_detail' pk=post.pk %}">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Add comment</button>
